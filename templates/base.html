@@ -1,13 +1,39 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+
+{% include 'head.html' %}
+
 <body>
-    {% block content  %}
-    {% endblock content %}
+     {% if messages %}
+        <div>
+          <strong>Messages:</strong>
+          <ul>
+            {% for message in messages %}
+            <li>{{message}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+    {% endif %}
+
+    {% include 'navbar.html' %}
+
+    <br><br><br><br>
+
+      <!--Main layout-->
+      {% block content %}
+      {% endblock %}
+      <!--Main layout-->
+
+        {% block extra_body %}
+        {% endblock %}
+
+    {% include 'footer.html' %}
+
+    {% include 'scripts.html' %}
+
+
 </body>
+
 </html>
