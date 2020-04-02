@@ -3,37 +3,40 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% include 'head.html' %}
+    {% include 'head.html' %}
+      <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
 
-<body>
-     {% if messages %}
-        <div>
-          <strong>Messages:</strong>
-          <ul>
-            {% for message in messages %}
-            <li>{{message}}</li>
-            {% endfor %}
-          </ul>
-        </div>
-    {% endif %}
+    <body>
+         {% if messages %}
+            <div>
+              <strong>Messages:</strong>
+              <ul>
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+        {% endif %}
 
-    {% include 'navbar.html' %}
+        {% include 'navbar.html' %}
 
-    <br><br><br><br>
+        <br><br><br><br>
 
-      <!--Main layout-->
-      {% block content %}
-      {% endblock %}
-      <!--Main layout-->
+          <!--Main layout-->
+          {% block content %}
+          {% endblock %}
+          <!--Main layout-->
 
-        {% block extra_body %}
-        {% endblock %}
+            {% block extra_body %}
+            {% endblock %}
 
-    {% include 'footer.html' %}
+        {% include 'footer.html' %}
 
-    {% include 'scripts.html' %}
+        {% include 'scripts.html' %}
 
 
-</body>
+    </body>
 
 </html>
