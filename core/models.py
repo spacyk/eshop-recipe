@@ -3,6 +3,7 @@ from django.db import models, transaction
 from django.db.models import Sum
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+from django_countries.fields import CountryField
 
 CATEGORY_CHOICES = (
     ('S', 'Shirt'),
@@ -34,8 +35,13 @@ class Item(models.Model):
             'slug': self.slug
         })
 
-    def get_add_to_cart_url(self):
-        return reverse('core:add-to-cart', kwargs={
+    def get_add_single_to_cart_url(self):
+        return reverse('core:add-single-to-cart', kwargs={
+            'item_id': self.id
+        })
+
+    def get_remove_single_from_cart_url(self):
+        return reverse('core:remove-single-from-cart', kwargs={
             'item_id': self.id
         })
 
@@ -51,10 +57,17 @@ class Item(models.Model):
 
 
 class Order(models.Model):
+    PAYMENT_CHOICES = (
+        ('S', 'Stripe'),
+        ('P', 'PayPal')
+    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='orders', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_ordered = models.DateTimeField(null=True)
     is_ordered = models.BooleanField(default=False)
+    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, null=True)
+    payment_option = models.CharField(choices=PAYMENT_CHOICES, max_length=2, null=True)
 
     def __str__(self):
         return f'{self.id}-{self.is_ordered}'
@@ -63,7 +76,7 @@ class Order(models.Model):
     def total_price(self):
         price = 0
         for order_item in self.order_items.all():
-            price += order_item.item.price * order_item.quantity
+            price += order_item.total_item_price
         return price
 
     @property
@@ -74,7 +87,7 @@ class Order(models.Model):
         return count
 
     @transaction.atomic
-    def add_item(self, item_id):
+    def add_single_item(self, item_id):
         try:
             item = Item.objects.get(id=item_id, stock__gt=0)
         except Item.DoesNotExist:
@@ -90,7 +103,7 @@ class Order(models.Model):
             OrderItem.objects.create(item=item, order=self)
 
     @transaction.atomic
-    def remove_item(self, item_id):
+    def remove_single_item(self, item_id):
         try:
             order_item = self.order_items.get(item__id=item_id)
         except Item.DoesNotExist:
@@ -105,6 +118,17 @@ class Order(models.Model):
         order_item.item.stock += 1
         order_item.item.save()
 
+    @transaction.atomic
+    def remove_item(self, item_id):
+        try:
+            order_item = self.order_items.get(item__id=item_id)
+        except Item.DoesNotExist:
+            return None
+
+        order_item.delete()
+        order_item.item.stock += order_item.quantity
+        order_item.item.save()
+
 
 class OrderItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -114,4 +138,13 @@ class OrderItem(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def total_item_price(self):
+        return self.quantity * self.item.price
 
+
+class BillingAddress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100)
+    country = CountryField(multiple=False)
+    zip = models.CharField(max_length=100)

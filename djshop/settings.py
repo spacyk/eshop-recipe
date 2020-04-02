@@ -1,4 +1,5 @@
 import os
+import stripe
 
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
@@ -16,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'crispy_forms',
+    'django_countries',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -96,3 +98,8 @@ SITE_ID = 1
 # CRISPY
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+# Set your secret key. Remember to switch to your live secret key in production!
+# See your keys here: https://dashboard.stripe.com/account/apikeys
+stripe.api_key = 'sk_test_azu24qWELxPO7lxxT3DpFtNI00HYtfoJEr'
