@@ -32,24 +32,20 @@ class PaymentView(AccessMixin, View):
             if self.order.total_count == 0:
                 return HttpResponseRedirect(reverse('core:home'))
 
+        self.intent = self.request.session.get('intent')
+        if not self.intent:
+            return HttpResponseRedirect(reverse('core:home'))
+
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, *args, **kwargs):
         context = {
-            'items': self.order.order_items.all().prefetch_related('item'),
-            'order': self.order
+            'order': self.order,
+            'intent': self.intent
         }
         return render(self.request, "payment.html", context)
 
     def post(self, *args, payment_option=None, **kwargs):
-        intent = stripe.PaymentIntent.create(
-            amount=1099,
-            currency='czk',
-            # Verify your integration in this guide by including this parameter
-            metadata={'integration_check': 'accept_a_payment'},
-        )
-        self.request.session['client_secret'] = intent.client_secret
-        x = intent
         return redirect(reverse('core:payment', kwargs={'payment_option': payment_option}))
 
 
@@ -104,8 +100,27 @@ class CheckoutView(AccessMixin, View):
             self.order.payment_option = payment_option
             self.order.save(update_fields=['billing_address', 'payment_option'])
 
+            self.create_stripe_intent()
             return redirect(reverse('core:payment', kwargs={'payment_option': payment_option}))
+
         return render(self.request, "checkout-page.html")
+
+    def create_stripe_intent(self):
+        intent = self.request.session.get('intent')
+        actual_price = int(self.order.total_price * 100)
+        if intent:
+            stripe.PaymentIntent.modify(
+                intent.get('id'),
+                amount=actual_price,
+            )
+        else:
+            intent = stripe.PaymentIntent.create(
+                amount=actual_price,
+                currency='czk',
+                # Verify your integration in this guide by including this parameter
+                metadata={'integration_check': 'accept_a_payment'},
+            )
+            self.request.session['intent'] = {'client_secret': intent.client_secret, 'id': intent.id}
 
 
 class ItemDetailView(DetailView):
