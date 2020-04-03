@@ -59,7 +59,6 @@ class Item(models.Model):
 class Order(models.Model):
     PAYMENT_CHOICES = (
         ('S', 'Stripe'),
-        ('P', 'PayPal')
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='orders', on_delete=models.CASCADE)

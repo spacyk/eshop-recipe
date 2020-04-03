@@ -18,5 +18,3 @@ class CheckoutForm(forms.Form):
     }))
     you_happy = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
     payment_option = forms.ChoiceField(widget=forms.RadioSelect(), choices=Order.PAYMENT_CHOICES)
-
-

@@ -23,18 +23,34 @@ class PaymentView(AccessMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
+
+        try:
+            self.order = Order.objects.get(user=self.request.user, is_ordered=False)
+        except Order.DoesNotExist:
+            return HttpResponseRedirect(reverse('core:home'))
+        else:
+            if self.order.total_count == 0:
+                return HttpResponseRedirect(reverse('core:home'))
+
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, *args, **kwargs):
-        return render(self.request, "payment.html")
+        context = {
+            'items': self.order.order_items.all().prefetch_related('item'),
+            'order': self.order
+        }
+        return render(self.request, "payment.html", context)
 
-    def post(self, *args, **kwargs):
+    def post(self, *args, payment_option=None, **kwargs):
         intent = stripe.PaymentIntent.create(
-            amount=1,
-            currency='usd',
+            amount=1099,
+            currency='czk',
             # Verify your integration in this guide by including this parameter
             metadata={'integration_check': 'accept_a_payment'},
         )
+        self.request.session['client_secret'] = intent.client_secret
+        x = intent
+        return redirect(reverse('core:payment', kwargs={'payment_option': payment_option}))
 
 
 class CheckoutView(AccessMixin, View):
