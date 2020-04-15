@@ -101,6 +101,8 @@ class CheckoutView(AccessMixin, View):
             self.order.save(update_fields=['billing_address', 'payment_option'])
 
             self.create_stripe_intent()
+            # Think of this as, instruction guy performs actual payment on banckend
+            # Confirm payment could be handled by backend... maybe better way
             return redirect(reverse('core:payment', kwargs={'payment_option': payment_option}))
 
         return render(self.request, "checkout-page.html")

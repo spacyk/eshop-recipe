@@ -68,7 +68,10 @@
 
                       <!--Card image-->
                       <div class="view overlay">
-                        <img src="{% static 'core/img/bicycle.png' %}" class="card-img-top"
+{#                        <img src="{% static 'core/img/bicycle.png' %}" class="card-img-top"#}
+
+                              <img src="{{ item.image.url }}" class="card-img-top"
+
                           alt="">
                       </div>
                       <!--Card image-->

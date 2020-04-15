@@ -26,6 +26,7 @@ class Item(models.Model):
     slug = models.SlugField(unique=True, null=False)
     description = models.TextField(default='Very durable and hot product')
     stock = models.IntegerField(default=1)
+    image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.title
