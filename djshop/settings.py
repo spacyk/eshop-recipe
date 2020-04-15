@@ -1,12 +1,16 @@
 import os
 import stripe
 
+import dj_database_url
+
+
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-ALLOWED_HOSTS = []
+SECRET_KEY = '-05sgp9deqq1nltm@^^2cc+v29ityybv3v2t77qi66czazj'
+
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'fathomless-eyrie-68941.herokuapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,6 +23,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'crispy_forms',
     'django_countries',
+    'whitenoise.runserver_nostatic',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -34,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'djshop.urls'
@@ -70,6 +76,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'core/static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.sqlite3",
@@ -89,6 +97,8 @@ DATABASES = {
     }
 }
 
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 if ENVIRONMENT == 'production':
     DEBUG = False
