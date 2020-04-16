@@ -47,7 +47,7 @@ class Item(models.Model):
         })
 
     def get_remove_from_cart_url(self):
-        return reverse('core:remove-from-cart', kwargs={
+        return reverse('core:summary-remove-from-cart', kwargs={
             'item_id': self.id
         })
 

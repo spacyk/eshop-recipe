@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'crispy_forms',
     'django_countries',
+    'django_hosts',
     'whitenoise.runserver_nostatic',
     'allauth',
     'allauth.account',
@@ -41,8 +42,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
-
-ROOT_URLCONF = 'djshop.urls'
 
 TEMPLATES = [
     {
@@ -77,6 +76,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+ROOT_URLCONF = 'djshop.urls'
+ROOT_HOSTCONF = 'djshop.hosts'
+DEFAULT_HOST = 'www'
 
 # DATABASES = {
 #     "default": {

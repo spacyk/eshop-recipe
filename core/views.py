@@ -143,9 +143,14 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse('core:home'))
 
 
-@login_required
-def add_single_to_cart(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
+def _remove_single(request, item):
+    order_qs = Order.objects.filter(user=request.user, is_ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        order.remove_single_item(item.id)
+
+
+def _add_single(request, item):
     order_qs = Order.objects.filter(user=request.user, is_ordered=False)
     if order_qs.exists():
         order = order_qs[0]
@@ -153,26 +158,45 @@ def add_single_to_cart(request, item_id):
         order = Order.objects.create(user=request.user)
     order.add_single_item(item.id)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+def add_single_to_cart(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    _add_single(request, item)
+
+    return HttpResponseRedirect(reverse('core:product', kwargs={'slug': item.slug}))
 
 
 @login_required
 def remove_single_from_cart(request, item_id):
     item = get_object_or_404(Item, id=item_id)
-    order_qs = Order.objects.filter(user=request.user, is_ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        order.remove_single_item(item.id)
+    _remove_single(request, item)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(reverse('core:product', kwargs={'slug': item.slug}))
 
 
 @login_required
-def remove_from_cart(request, item_id):
+def summary_add_single_to_cart(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    _add_single(request, item)
+
+    return HttpResponseRedirect(reverse('core:order-summary'))
+
+
+@login_required
+def summary_remove_single_from_cart(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    _remove_single(request, item)
+
+    return HttpResponseRedirect(reverse('core:order-summary'))
+
+
+@login_required
+def summary_remove_from_cart(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     order_qs = Order.objects.filter(user=request.user, is_ordered=False)
     if order_qs.exists():
         order = order_qs[0]
         order.remove_item(item.id)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(reverse('core:order-summary'))
