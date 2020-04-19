@@ -10,7 +10,7 @@ DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-05sgp9deqq1nltm@^^2cc+v29ityybv3v2t77qi66czazj'
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'fathomless-eyrie-68941.herokuapp.com']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', os.getenv('HEROKU_HOST')]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_countries',
     'django_hosts',
+    'storages',
     'whitenoise.runserver_nostatic',
     'allauth',
     'allauth.account',
@@ -114,6 +115,17 @@ if ENVIRONMENT == 'production':
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+if ENVIRONMENT == 'staging':
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    DEFAULT_FILE_STORAGE = 'djshop.storage_backends.MediaStorage'
+
+    # Set your secret key. Remember to switch to your live secret key in production!
+    # See your keys here: https://dashboard.stripe.com/account/apikeys
+    stripe.api_key = os.getenv('STRIPE_SECRET', '')
+
 """Authentication backends"""
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -129,8 +141,3 @@ SITE_ID = 1
 # CRISPY
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-
-# Set your secret key. Remember to switch to your live secret key in production!
-# See your keys here: https://dashboard.stripe.com/account/apikeys
-stripe.api_key = 'sk_test_azu24qWELxPO7lxxT3DpFtNI00HYtfoJEr'
