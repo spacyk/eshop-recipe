@@ -1,25 +1,34 @@
-# Ecom Example
+# Eshop Recipe
 
-This is an attempt to create example eshop using Django framework.
+This is a generic purpose e-commerce web application created with Django web framework
+with aim to provide out of the box eshop template with some useful integrations.
 
-Based on udemy course https://www.udemy.com/course/build-an-e-commerce-website-with-django/learn/lecture/16261354#overview.
-Additionally I tried to:
- - fix some of the abstraction mistakes that are done in the course.
- - Integrate with S3 data storage to store images of products.
- - Integrate with Stripe card payment method. (Not finished, but it's already possible to try Stripe testing card to create a payment)
- ...
+This project is based on online course.
+https://www.udemy.com/course/build-an-e-commerce-website-with-django/learn/lecture/16261354#overview
 
-**Beware there are many things that need to be refactored, fixed, updated or finished before any attempt to deploy this into production.**
+**However, there are interesting extensions that are out of the scope of the course.**
 
-Some of the things to be done:
- - Make signup and login only with email
- - Finish order (set ordered, save, set statuses)
- - Create payment model - save payment intent data
- - Handle all payment the responses - errors - success, timeout, wrong number, good number, test cases stripe provides
- - Order management - statuses (keep track of refunds and the process) Properly setup the order flow
- - Create Refund model
- - Create custom admin action to change order status on more orders - on queryset
- - Extend addresses to billing and shipping
- - Save the card for the future payment
- - Add user profile
- 
+### Current Extentions
+ - Integration with **aws S3** data storage to store product images.
+ - Partially done integration with **Stripe** card payment method to handle payments for the products.
+
+**Beware there are many things that need to be refactored, fixed, updated or finished before deployment to production.**
+
+### Future Ideas
+**Customer**
+ - Make signup and login only possible with email.
+ - Add user profile interface.
+
+**Orders**
+ - Extend and update order properties.
+ - Improve Order management - Keep track of refunds. Properly review and set up the order flow.
+
+**Payments**
+ - Create payment model - save payment intent data.
+ - Handle all payment responses - success, timeout, wrong data, errors. Use stripe test cases.
+ - Store card information for future payments.
+
+**Other**
+ - Extend address fields to allow different billing and shipping address.
+ - Create custom admin actions for "bulk" order updates.
+
