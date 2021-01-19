@@ -1,7 +1,6 @@
 # Eshop Recipe
 
-This is a generic purpose e-commerce web application created with Django web framework
-with aim to provide out of the box eshop template with some useful integrations.
+This is a generic purpose e-commerce web application created with Django web framework with aim to provide e-shop template with some useful out of the box integrations.
 
 This project is based on online course.
 https://www.udemy.com/course/build-an-e-commerce-website-with-django/learn/lecture/16261354#overview
@@ -9,8 +8,8 @@ https://www.udemy.com/course/build-an-e-commerce-website-with-django/learn/lectu
 **However, there are interesting extensions that are out of the scope of the course.**
 
 ### Current Extentions
- - Integration with **aws S3** data storage to store product images.
- - Partially done integration with **Stripe** card payment method to handle payments.
+ - Integration with [**aws S3**](https://aws.amazon.com/s3/) data storage to store product images.
+ - Partially done integration with [**Stripe**](https://stripe.com/) card payment method to handle payments.
 
 **Beware there are many things that need to be refactored, fixed, updated or finished before deployment to production.**
 
