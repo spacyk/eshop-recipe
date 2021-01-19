@@ -3,6 +3,7 @@
 This is a generic purpose e-commerce web application created with Django web framework with aim to provide e-shop template with some useful out of the box integrations.
 
 This project is based on online course.
+
 https://www.udemy.com/course/build-an-e-commerce-website-with-django/learn/lecture/16261354#overview
 
 **However, there are interesting extensions that are out of the scope of the course.**
