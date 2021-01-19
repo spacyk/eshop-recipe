@@ -10,7 +10,7 @@ https://www.udemy.com/course/build-an-e-commerce-website-with-django/learn/lectu
 
 ### Current Extentions
  - Integration with **aws S3** data storage to store product images.
- - Partially done integration with **Stripe** card payment method to handle payments for the products.
+ - Partially done integration with **Stripe** card payment method to handle payments.
 
 **Beware there are many things that need to be refactored, fixed, updated or finished before deployment to production.**
 
